@@ -1,8 +1,14 @@
 const express = require("express");
-const dotenv = require("dotenv");
 const path = require("node:path");
 
-dotenv.config({ path: path.join(__dirname, ".env") });
+const express = require("express");
+const path = require("node:path");
+
+if (!process.env.VERCEL) {
+    require("dotenv").config({
+        path: path.join(__dirname, ".env"),
+    });
+}
 
 const app = express();
 app.disable("x-powered-by");
