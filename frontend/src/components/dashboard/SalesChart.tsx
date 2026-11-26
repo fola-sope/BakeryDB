@@ -1,4 +1,4 @@
-import { money } from "../../sampleData";
+import { money } from "../../format";
 
 type SalesChartProps = { points: { date: string; total: number }[] };
 

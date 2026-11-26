@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { stockStatus } from "../../sampleData";
-import type { Product } from "../../sampleData";
+import { stockStatus } from "../../format";
+import type { Product } from "../../types";
 import { Badge } from "../ui/Badge";
 
 export function StockAttention({ products }: { products: Product[] }) {
