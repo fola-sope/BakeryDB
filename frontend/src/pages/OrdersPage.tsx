@@ -19,12 +19,10 @@ export function Orders({ state }: { state: OrdersState }) {
     return (
         <div className='page-stack'>
             <div className='section-title'>
-                <p className='small-note'>
-                    Customer and employee names are shown when available.
-                </p>
+                {/*               
                 <button className='button secondary' disabled={loading} onClick={refresh}>
                     Refresh orders
-                </button>
+                </button> */}
             </div>
             <div className='filter-bar'>
                 <label>
