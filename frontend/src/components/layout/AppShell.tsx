@@ -35,10 +35,6 @@ export function AppShell() {
             <div className='workspace'>
                 <AppHeader menuRef={menuButton} onOpenMenu={() => drawer.current?.showModal()} />
                 <main id='main-content' className='page-content'>
-                    {/* <p className="sample-banner">
-            <strong>Sample data</strong> Demonstration records only. Changes
-            last for this session. Currency: CAD (demo).
-          </p> */}
                     <p className='page-eyebrow'>Crumb & Co. / {page.short}</p>
                     <h1 ref={heading} tabIndex={-1}>
                         {page.label}
