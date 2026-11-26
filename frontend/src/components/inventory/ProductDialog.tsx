@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import type { Product } from "../../sampleData";
+import type { Product } from "../../types";
 import { Modal } from "../ui/Modal";
 
 type ProductDialogProps = {
@@ -30,7 +30,7 @@ export function ProductDialog({
 
   return (
     <Modal
-      title={product ? "Edit sample product" : "Add sample product"}
+      title={product ? "Preview product changes" : "Preview new product"}
       onClose={onClose}
     >
       <form onSubmit={submit}>
@@ -89,7 +89,7 @@ export function ProductDialog({
             Cancel
           </button>
           <button className="button primary" type="submit">
-            Apply to sample data
+            Apply preview
           </button>
         </div>
       </form>
