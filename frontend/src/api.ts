@@ -11,21 +11,36 @@ import type {
     Product,
 } from "./types";
 
+// Public reads go directly to the data service in production.
+// Local development continues to use the existing backend proxy.
+const apiBaseUrl = import.meta.env.PROD
+    ? "https://oracleapex.com/ords/bakerydatabase/api"
+    : "/api";
+
 async function getItems<T>(
     resource: "products" | "categories" | "audit-logs" | "orders" | "employees" | "customers",
     signal?: AbortSignal,
 ): Promise<T[]> {
-    const response = await fetch(`/api/${resource}`, { signal });
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(data.error || `Unable to load ${resource}.`);
+    const items: T[] = [];
+    let offset = 0;
+    for (let page = 0; page < 100; page++) {
+        const url = apiBaseUrl + "/" + resource + "/?offset=" + offset + "&limit=100";
+        const response = await fetch(url, {
+            signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(15000)]) : AbortSignal.timeout(15000),
+            headers: { Accept: "application/json" },
+            credentials: "omit",
+        });
+        if (!response.ok) {
+            throw new Error("Unable to load " + resource + " (HTTP " + response.status + "). Please try again.");
+        }
+        const data = await response.json();
+        if (!Array.isArray(data.items)) throw new Error("Unexpected " + resource + " response.");
+        items.push(...data.items);
+        if (!data.hasMore) return items;
+        if (data.items.length === 0) throw new Error("Unable to load the next page of " + resource + ".");
+        offset += data.items.length;
     }
-    if (!Array.isArray(data.items)) {
-        throw new Error(`Unexpected ${resource} response.`);
-    }
-
-    return data.items;
+    throw new Error("Too many " + resource + " records to load.");
 }
 
 export async function loadAuditLogs(signal?: AbortSignal): Promise<AuditLog[]> {
@@ -83,7 +98,6 @@ export async function loadInventory(signal?: AbortSignal): Promise<InventoryData
 
 export async function loadOrders(signal?: AbortSignal): Promise<Order[]> {
     const rows = await getItems<OrderResponse>("orders", signal);
-    console.log(rows);
     return rows
         .map((row) => {
             const id = Number(row.order_id);
