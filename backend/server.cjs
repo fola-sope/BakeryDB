@@ -1,9 +1,6 @@
 const express = require("express");
 const path = require("node:path");
 
-const express = require("express");
-const path = require("node:path");
-
 if (!process.env.VERCEL) {
     require("dotenv").config({
         path: path.join(__dirname, ".env"),
