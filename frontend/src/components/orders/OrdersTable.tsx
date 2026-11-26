@@ -1,8 +1,9 @@
 import { DataTable } from "../ui/DataTable";
 import { Badge } from "../ui/Badge";
-import { demoOrders, money } from "../../sampleData";
+import { money } from "../../format";
+import type { Order } from "../../types";
 
-export function OrdersTable({ orders }: { orders: typeof demoOrders }) {
+export function OrdersTable({ orders }: { orders: Order[] }) {
   return (
     <DataTable
       headers={[
@@ -17,8 +18,8 @@ export function OrdersTable({ orders }: { orders: typeof demoOrders }) {
         `#${order.id}`,
         order.customer,
         order.employee,
-        order.date,
-        <span className="numeric">{money(order.total)}</span>,
+        order.date || "Not recorded",
+        <span className="numeric">{order.total === null ? "Unavailable" : money(order.total)}</span>,
         <Badge>{order.status}</Badge>,
       ])}
     />
