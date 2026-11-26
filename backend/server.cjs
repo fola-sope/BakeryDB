@@ -24,9 +24,7 @@ async function fetchCollection(resource) {
             headers: { Accept: "application/json" },
         });
         if (resource === "orders" && response.status === 404) {
-            throw new ServiceError(
-                "Orders are not available yet. Please try again later.",
-            );
+            throw new ServiceError("Orders are not available yet. Please try again later.");
         }
         if (resource === "customers" && response.status === 404) {
             throw new ServiceError("Customers are not available yet. Please try again later.");
@@ -65,16 +63,17 @@ for (const resource of ["categories", "products", "audit-logs", "orders", "emplo
         try {
             response.json(await fetchCollection(resource));
         } catch (error) {
-            const message =
-                error instanceof ServiceError
-                    ? error.message
-                    : "Unable to load records. Please try again.";
+            const message = error instanceof ServiceError ? error.message : "Unable to load records. Please try again.";
 
             response.status(502).json({ error: message });
         }
     });
 }
 
-app.listen(PORT, "127.0.0.1", () => {
-    console.log(`Backend running at http://127.0.0.1:${PORT}`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, "127.0.0.1", () => {
+        console.log(`Backend running at http://127.0.0.1:${PORT}`);
+    });
+}
+
+module.exports = app;
